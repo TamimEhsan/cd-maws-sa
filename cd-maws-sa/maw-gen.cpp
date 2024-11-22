@@ -83,7 +83,7 @@ void build(const string &s){
 // string ans[N];
 int cur = 0;
 string ALP = "ACGT";
-ofstream fout;
+
 const int K = 40;
 char str[K];
 int len, minimumK, maximumK;
@@ -102,7 +102,7 @@ void dfs(int node){
                 str[len++] = ALP[i];
                 str[len] = '\0';
                 // ans[cur++] = str;
-                fout << str << "\n";
+                cout << str << "\n";
                 cur++;
                 len--;
             }
@@ -119,7 +119,6 @@ string output_file="output/output.out";
 long double total_time = 0;
 
 void buildMaw(const string &s, int minK, int maxK){
-    fout.open(output_file);
     cur = 0;
     cerr << "String size: " << s.size() << endl;
     // cerr << "Minimum K: " << minK << endl;
@@ -139,7 +138,6 @@ void buildMaw(const string &s, int minK, int maxK){
     
     // cerr << "Total Time: "<< build_time + maw_time << " sec" << endl;
     total_time += build_time + maw_time;
-    fout.close();
 
 }
 
@@ -191,29 +189,42 @@ int main(int argc, char *argv[]){
         cerr << "Usage: " << argv[0] << " <input-file> <output-file> <minK> <maxK>" << endl;
         return 1;
     }
-    input_file=argv[1];
-    output_file = argv[2];
+    string inputFilePath =argv[1];
+    string outputFilePath = argv[2];
     minK = atoi(argv[3]);
     maxK = atoi(argv[4]);
+
+    if( inputFilePath != "stdin" )
+        freopen(inputFilePath.c_str(),"r",stdin);
+    if( outputFilePath != "stdout" )
+        freopen(outputFilePath.c_str(),"w",stdout);
     
 
     auto start = clock();
-    
-    ifstream fin(input_file);
-    // ifstream fin("in.txt");
+
 
     string dna;
     string line;
-    while( fin>>line ){
+    string taxa;
+    while( cin>>line ){
         if( line.size() > 0 && line[0] != '>' ){
             dna += line;
         }else if( line[0] == '>' ){
+            if( taxa.size() == 0 ){
+                taxa = line.substr(1);
+                continue;
+            }
+            cout<<">"<<taxa<<"\n";
+            taxa = line.substr(1);
             string s = dna;
             dna="";
             if(minK > maxK)swap(minK, maxK);
+            
+            //cout.flush();
             buildMaw(s, minK, maxK);
+            cout<<"\n";
             // cout <<" (" << cur << " Maws) "<< "\n";
-            cout.flush();
+            //cout.flush();
 
         }
     }
@@ -221,24 +232,12 @@ int main(int argc, char *argv[]){
     string s = dna;
     dna="";
     if(minK > maxK)swap(minK, maxK);
+    cout<<">"<<taxa<<"\n";
     buildMaw(s, minK, maxK);
+    cout<<"\n";
     // cout <<" (" << cur << " Maws) "<< "\n";
     cout.flush();
 
     auto total_time = (clock() - start) / (double)CLOCKS_PER_SEC;
-    // cerr << fixed << setprecision(6) << "Total Time: " << total_time << " sec" << endl;
-    // cout << "Size of Suffix Automata: " << sizeof(SuffixAutomaton::sa) / 1e9 << " GB" << endl;
-    // string s = "TGAGCTTGCA";
-    // // cin >> s;
-
-    // buildMaw(s, 3, 9);
-    // buildMawBrute(s, 3, 9);
-    // cout << "SOLUTION:" << endl;
-    // for(int i = 0; i < cur; i++)cout << ans[i] << endl;
-    // cout << "BRUTE" << endl;
-    // for(int i = 0; i < bruteCur; i++)cout << bruteAns[i] << endl;
-    
-    
-    
-    
+  
 }
