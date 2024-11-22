@@ -32,6 +32,7 @@ pii getHash(string s){
 }
 
 vector<vector<string>> maws;
+vector<string> taxa;
 
 void readFile(){
 
@@ -40,6 +41,7 @@ void readFile(){
         if( s[0] == '>' ){
             vector<string> v;
             maws.push_back(v);
+            taxa.push_back(s.substr(1));
         }
         else if( s.size() > 0 ){
             maws.back().push_back(s);
@@ -71,13 +73,19 @@ int distance(int x,int y){
 
 void CalculateDistanceMatrix(){
     for(int i=0;i<maws.size();i++){
+        cout<<","<<taxa[i];
+    }
+    cout<<'\n';
+    for(int i=0;i<maws.size();i++){
         //cout<<i<<" "<<maws[i].size()<<"\n";
-        for(int j=i+1;j<maws.size();j++){
+        cout<<taxa[i];
+        for(int j=0;j<maws.size();j++){
             int same = distance(i,j);
             double la = sqrt(maws[i].size());
             double lb = sqrt(maws[j].size());
             double dis = 1.0 - (double)(same)/(la*lb);
-           cout<<dis<<",";
+            if( i == j) dis = 0;
+            cout<<","<<dis;
         }
         cout<<'\n';
     }
@@ -96,8 +104,8 @@ int main(int argc, char* argv[]) {
     cin.tie(NULL);
     cout.tie(NULL);
 
-    freopen(inputFilePath,"r",stdin);
-    freopen(outputFilePath,"w",stdout);
+    freopen(inputFilePath.c_str(),"r",stdin);
+    freopen(outputFilePath.c_str(),"w",stdout);
 
     readFile();
     CalculateDistanceMatrix();
